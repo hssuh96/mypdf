@@ -1,0 +1,30 @@
+{
+  "manifest_version": 2,
+
+  "name": "My PDF",
+  "version": "1",
+
+  "background": {
+    "scripts": ["background/background.js"],
+    "persistent": false
+  },
+
+  "browser_action": {
+  },
+
+  "content_scripts": [
+  ],
+
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "*://*/*",
+    "downloads"
+  ],
+
+  "web_accessible_resources": [
+    "assets/*"
+  ],
+
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+}
