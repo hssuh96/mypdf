@@ -1,8 +1,26 @@
-extractedElement = extractMainContentElement(document.body);
+var bodyElement = document.body;
+var extractedElement;
+var titleText;
+
+extractedElement = extractMainContentElement(bodyElement);
+
+titleText = findTitle(bodyElement, extractedElement);
+
+if (window.location.hostname === 'blog.naver.com') {
+  console.log('naver blog!');
+  console.log('document.getElementById("postListBody")', document.getElementById("postListBody"));
+  console.log('iframe', document.getElementById("mainFrame").contentWindow.document.body);
+
+  const naverIframeDocument = document.getElementById("mainFrame").contentWindow.document;
+
+  console.log('WTF', naverIframeDocument.getElementById("postListBody"));
+
+  extractedElement = naverIframeDocument.getElementById("postListBody");
+  titleText = naverIframeDocument.getElementsByClassName("pcol1")[0].textContent;
+}
 
 console.log('extracted main content element!', extractedElement);
 
-titleText = findTitle(document.body, extractedElement);
 
 console.log('extracted title', titleText);
 
@@ -58,25 +76,48 @@ function removeAllClassesInElement(element, className) {
 
 
 var walk_the_DOM = function walk(node, func) {
+  // console.log('first node', node);
     func(node);
     node = node.firstChild;
     while (node) {
-        walk(node, func);
-        node = node.nextSibling;
+      // console.log('node', node);
+      const nextSibling = node.nextSibling;
+      walk(node, func);
+      node = nextSibling;
     }
 };
 
 function rawHTML(html){
   var wrapper= document.createElement('div');
 wrapper.innerHTML= html;
-walk_the_DOM(wrapper.firstChild, function(element) {
-    //console.log(element);
+walk_the_DOM(wrapper, function(element) {
+    if (element.nodeType !== Node.ELEMENT_NODE) {
+      return;
+    }
+
     // console.log("parent"+element.parentNode);
     // if(element.tagName){console.log(element.tagName)}
-    if(element.tagName =="IMG" && element.className.includes("progressiveMedia-thumbnail")){
+    if(element.tagName == "IMG" && element.className.includes("progressiveMedia-thumbnail")){
         // console.log("지운다");
         element.remove();
+        return;
     }
+
+    if (element.tagName === 'IMG' && !element.getAttribute("src") && element.getAttribute("data-src")) {
+      element.setAttribute("src", element.getAttribute("data-src"));
+    }
+
+    if (element.tagName === 'BUTTON') {
+      element.remove();
+      return;
+    }
+
+    // element.classList.forEach((className) => {
+    //   if (className.toLowerCase().includes("comment")) {
+    //     element.remove();
+    //     return;
+    //   }
+    // })
 
     // if(element.parentNode.tagName == "EM"){
     //     if(element.nodeType== Node.TEXT_NODE){console.log("EM들어옴"+element.textContent);}
@@ -131,12 +172,11 @@ var modalHTMLPath = chrome.extension.getURL('assets/modal.html');
 fetch(modalHTMLPath)
 .then(response => response.text())
 .then(data => {
+  const faCSSPath = chrome.extension.getURL('assets/all.min.css');
   const faStyleElement = document.createElement("link");
   faStyleElement.setAttribute("rel", "stylesheet");
   faStyleElement.setAttribute("type", "text/css");
-  faStyleElement.setAttribute("href", "https://use.fontawesome.com/releases/v5.5.0/css/all.css");
-  faStyleElement.setAttribute("integrity", "sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU");
-  faStyleElement.setAttribute("crossorigin", "anonymous");
+  faStyleElement.setAttribute("href", faCSSPath);
   document.head.appendChild(faStyleElement);
 
   if (document.getElementById("myp-modal")) {

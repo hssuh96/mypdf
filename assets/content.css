@@ -37,7 +37,7 @@ h1{
     line-height: 1.6;
 }
 h2{
-    font-size: 32px;
+    font-size: 24px;
     font-family: NotoSansCJKkr, Arial, Helvetica, sans-serif;
     font-weight: bold;
     line-height: 1.6;
@@ -116,7 +116,7 @@ font-style: normal;
 font-weight: 300;
 src: local('Noto Sans Regular'), local('NotoSans-Regular'), url(/fonts/NotoSans-Regular.eot);
 src: url(/fonts/NotoSans-Light.eot?#iefix) format('embedded-opentype'),
-url(/fonts/NotoSans-Light.otf) format('otf');
+url(/fonts/NotoSansCJKkr-Light.otf) format('otf');
 }
 
 
@@ -126,5 +126,5 @@ font-style: normal;
 font-weight: bold;
 src: local('Noto Sans Bold'), local('NotoSans-Bold'), url(/fonts/NotoSans-Bold.eot);
 src: url(/fonts/NotoSans-Bold.eot?#iefix) format('embedded-opentype'),
-url(/fonts/NotoSans-Bold.otf) format('otf');
+url(/fonts/NotoSansCJKkr-Bold.otf) format('otf');
 }

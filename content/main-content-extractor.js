@@ -83,7 +83,7 @@ function extractMainContentElement(bodyElement) {
   // general condition에 의해 찾은 것은 몇 단계 필터링 단계를 더 거침.
   const elementByGeneralConditions = findElementByCompositeCondition(bodyElement, generalCompositeCondition);
 
-  const objectiveElement = elementByGeneralConditions ? elementByGeneralConditions : bodyElement;
+  let objectiveElement = elementByGeneralConditions ? elementByGeneralConditions : bodyElement;
   // const objectiveElement = bodyElement;
 
 
@@ -101,6 +101,21 @@ function extractMainContentElement(bodyElement) {
       return estimatedMainContentElementByExcludingSidebar;
     }
   }
+
+  // find comment area
+  // const commentArea = findCommentArea(objectiveElement);
+  //
+  // console.log('commentArea', commentArea);
+  //
+  // if (commentArea) {
+  //   const foo = findMainContentByExcludingSideBar(objectiveElement, commentArea);
+  //
+  //   console.log('foo', foo);
+  //
+  //   if (foo) {
+  //     return foo;
+  //   }
+  // }
 
   const estimatedMainContent = findEstimatedMainContent(objectiveElement);
 
@@ -128,13 +143,16 @@ function findTitle(bodyElement, mainContentElement) {
 
     const distanceBetweenMainContent = Math.min(Math.abs(mainContentElementDOMRect.top - elDOMRect.bottom), Math.abs(mainContentElementDOMRect.top - elDOMRect.top));
 
+    const area = elDOMRect.width * elDOMRect.height;
+
     return {
       'elementRef': el,
       'fontSize': parseInt(fontSize),
       'isInsideMainContentElement': isInsideMainContentElement,
       'distanceBetweenMainContent': distanceBetweenMainContent,
-      'score': (parseInt(fontSize) * 10 - distanceBetweenMainContent),
+      'score': (parseInt(fontSize) * parseInt(fontSize) - distanceBetweenMainContent),
       'belowMainContent': ((elDOMRect.top - mainContentElementDOMRect.bottom) > 0),
+      'area': area,
       'elDOMRect': elDOMRect,
       'mainContentElementDOMRect': mainContentElementDOMRect
     };
@@ -144,13 +162,15 @@ function findTitle(bodyElement, mainContentElement) {
     return null;
   }
 
+  console.log('hTagElementsInfo before', hTagElementsInfo);
+
   // hTagElementsInfo.sort((a, b) => a.fontSize - b.fontSize).reverse();
 
-  hTagElementsInfo = hTagElementsInfo.filter((x) => x.belowMainContent === false);
+  hTagElementsInfo = hTagElementsInfo.filter((x) => x.belowMainContent === false && x.area > 0);
 
   hTagElementsInfo.sort((a, b) => a.score - b.score).reverse();
 
-  console.log('hTagElementsInfo', hTagElementsInfo);
+  console.log('hTagElementsInfo after', hTagElementsInfo);
 
   return hTagElementsInfo[0].elementRef.textContent;
 }
@@ -192,6 +212,33 @@ function findEstimatedMainContent(objectiveElement) {
   return objectiveElement;
 }
 
+// function findCommentArea(objectiveElement) {
+//   const commentElementList = [];
+//   walkTheDOM(objectiveElement, (el) => {
+//     el.classList.forEach((className) => {
+//       if (className.toLowerCase().includes("comment")) {
+//         commentElementList.push(el);
+//       }
+//     })
+//   })
+//
+//   return findNearestCommonAncestor(commentElementList);
+// }
+//
+// function walkTheDOM(node, func) {
+//   if (node.nodeType !== Node.ELEMENT_NODE) {
+//     return;
+//   }
+//
+//   func(node);
+//   node = node.firstChild;
+//   while (node) {
+//     const nextSibling = node.nextSibling;
+//     walkTheDOM(node, func);
+//     node = nextSibling;
+//   }
+// };
+
 function findMainContentByExcludingSideBar(objectiveElement, estimatedSideBarElement) {
   const pathFromAncestorToDescendant = findPathFromAncestorToDescendant(objectiveElement, estimatedSideBarElement);
   // console.log('pathFromAncestorToDescendant', pathFromAncestorToDescendant);
@@ -210,8 +257,8 @@ function findMainContentByExcludingSideBar(objectiveElement, estimatedSideBarEle
       }
     }
 
-    const mainContentCandidate = getHighestScoreElement(elList);
-    console.log('mainContentCandidate', mainContentCandidate);
+    const scoreSortedElList = sortElementByScore(elList);
+    const mainContentCandidate = scoreSortedElList[0].elementRef;
 
     if (mainContentCandidate !== objectiveChildNode) { // sidebar와 분기가 일어난 시점
       const isMainContentNoHorizontalOverlap = elList.every((el) => {
@@ -366,6 +413,14 @@ function getWordList(node) {
   if (node.nodeType === Node.ELEMENT_NODE) {
     if (node.tagName === 'SCRIPT' || node.tagName === 'NOSCRIPT') {
       return wordList;
+    }
+
+    const classList = node.classList;
+
+    for (let i = 0 ; i < classList.length ; i++) {
+      if (classList[i].toLowerCase().includes("comment")) {
+        return wordList;
+      }
     }
 
     node = node.firstChild;
