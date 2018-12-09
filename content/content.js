@@ -179,18 +179,34 @@ fetch(modalHTMLPath)
 
   iframeDocument.head.appendChild(modalStyleElement);
 
+  let isEraseActivated = false;
+
+  document.getElementById("erase").addEventListener("click", () => {
+    isEraseActivated = !isEraseActivated;
+  });
+
+  document.getElementById("print").addEventListener("click", () => {
+    const printFrm = modalIframeElement.contentWindow;
+    printFrm.focus();
+    printFrm.print();
+  });
+
   iframeDocument.addEventListener("click", (evt) => {
     evt.preventDefault(); // to prevent link click
 
-    if (evt.target) {
-      evt.target.remove();
+    if (isEraseActivated) {
+      if (evt.target) {
+        evt.target.remove();
+      }
     }
   });
 
   iframeDocument.addEventListener("mouseover", (evt) => {
     removeAllClassesInElement(iframeDocument, "myp-remove-candidate-element");
-    if (evt.target) {
-      evt.target.classList.add("myp-remove-candidate-element");
+    if (isEraseActivated) {
+      if (evt.target) {
+        evt.target.classList.add("myp-remove-candidate-element");
+      }
     }
   });
 
