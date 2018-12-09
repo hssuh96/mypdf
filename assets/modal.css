@@ -5,10 +5,11 @@
   left: 0;
   top: 0;
   width: 100vw;
-  height: 100vh;
+  height: 94vh;
   overflow: auto; /* Enable scroll if needed */
   background-color: transparent;
-  padding-top: 20px;
+  padding-top: 15px;
+  padding-bottom: 15px
 }
 
 .myp-modal-content {
@@ -16,8 +17,11 @@
   margin: 0 auto; /* 15% from the top and centered */
   border: none;
   width: 80%; /* Could be more or less, depending on screen size */
+  height: 100%;
   box-shadow: 0px 0px 1px 1px #3a3a3a;
   font-family: NotoKrR, Arial, Helvetica, sans-serif;
+  display: flex;
+  flex-direction: column;
 }
 
 .myp-button-container {
@@ -113,9 +117,13 @@ body.myp-modal-opened {
   background-color: #000000;
 }
 
+.myp-page-content {
+  flex: 1;
+}
+
 .myp-page-content-iframe {
   width: 100%;
-  height: 80vh;
+  height: 100%;
   border: 0px;
 }
 
