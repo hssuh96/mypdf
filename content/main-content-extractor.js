@@ -141,7 +141,7 @@ function findTitle(bodyElement, mainContentElement) {
 
   hTagElementsInfo.sort((a, b) => a.fontSize - b.fontSize).reverse();
 
-  return hTagElementsInfo[0];
+  return hTagElementsInfo[0].elementRef.textContent;
 }
 
 function findEstimatedMainContent(objectiveElement) {
