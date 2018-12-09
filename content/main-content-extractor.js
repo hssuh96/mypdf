@@ -70,37 +70,38 @@ var sideBarCompositeCondition = {
 
 function extractMainContentElement(bodyElement) {
   // website specific condition에 의해 얻은 것은 바로 return
-  // const websiteSpecificCompositeCondition = websiteSpecificCompositeConditions[window.location.hostname];
-  //
-  // if (websiteSpecificCompositeCondition) {
-  //   const elementByWebsiteSpecificConditions = findElementByCompositeCondition(bodyElement, websiteSpecificCompositeCondition);
-  //
-  //   if (elementByWebsiteSpecificConditions) {
-  //     return elementByWebsiteSpecificConditions;
-  //   }
-  // }
+  const websiteSpecificCompositeCondition = websiteSpecificCompositeConditions[window.location.hostname];
+
+  if (websiteSpecificCompositeCondition) {
+    const elementByWebsiteSpecificConditions = findElementByCompositeCondition(bodyElement, websiteSpecificCompositeCondition);
+
+    if (elementByWebsiteSpecificConditions) {
+      return elementByWebsiteSpecificConditions;
+    }
+  }
 
   // general condition에 의해 찾은 것은 몇 단계 필터링 단계를 더 거침.
-  // const elementByGeneralConditions = findElementByCompositeCondition(bodyElement, generalCompositeCondition);
+  const elementByGeneralConditions = findElementByCompositeCondition(bodyElement, generalCompositeCondition);
 
-  // const objectiveElement = elementByGeneralConditions ? elementByGeneralConditions : bodyElement;
-  const objectiveElement = bodyElement;
+  const objectiveElement = elementByGeneralConditions ? elementByGeneralConditions : bodyElement;
+  // const objectiveElement = bodyElement;
 
 
   console.log('objectiveElement', objectiveElement);
 
   // find sideBar
-  // const sideBarElementByConditions = findElementByCompositeCondition(objectiveElement, sideBarCompositeCondition);
-  //
-  // if (sideBarElementByConditions) {
-  //   console.log('sideBar', sideBarElementByConditions);
-  //
-  //   const estimatedMainContentElementByExcludingSidebar = findMainContentByExcludingSideBar(objectiveElement, sideBarElementByConditions);
-  //
-  //   if (estimatedMainContentElementByExcludingSidebar) {
-  //     return estimatedMainContentElementByExcludingSidebar;
-  //   }
-  // }
+  const sideBarElementByConditions = findElementByCompositeCondition(objectiveElement, sideBarCompositeCondition);
+
+  if (sideBarElementByConditions) {
+    console.log('sideBar', sideBarElementByConditions);
+
+    const estimatedMainContentElementByExcludingSidebar = findMainContentByExcludingSideBar(objectiveElement, sideBarElementByConditions);
+
+    if (estimatedMainContentElementByExcludingSidebar) {
+      return estimatedMainContentElementByExcludingSidebar;
+    }
+  }
+
   const estimatedMainContent = findEstimatedMainContent(objectiveElement);
 
   return estimatedMainContent;
@@ -119,7 +120,7 @@ function findTitle(bodyElement, mainContentElement) {
 
   const mainContentElementDOMRect = mainContentElement.getBoundingClientRect();
 
-  const hTagElementsInfo = hTagElements.map((el) => {
+  let hTagElementsInfo = hTagElements.map((el) => {
     const fontSize = window.getComputedStyle(el).fontSize;
     const isInsideMainContentElement = mainContentElement.contains(el);
 
@@ -131,7 +132,11 @@ function findTitle(bodyElement, mainContentElement) {
       'elementRef': el,
       'fontSize': parseInt(fontSize),
       'isInsideMainContentElement': isInsideMainContentElement,
-      'distanceBetweenMainContent': distanceBetweenMainContent
+      'distanceBetweenMainContent': distanceBetweenMainContent,
+      'score': (parseInt(fontSize) * 10 - distanceBetweenMainContent),
+      'belowMainContent': ((elDOMRect.top - mainContentElementDOMRect.bottom) > 0),
+      'elDOMRect': elDOMRect,
+      'mainContentElementDOMRect': mainContentElementDOMRect
     };
   });
 
@@ -139,7 +144,13 @@ function findTitle(bodyElement, mainContentElement) {
     return null;
   }
 
-  hTagElementsInfo.sort((a, b) => a.fontSize - b.fontSize).reverse();
+  // hTagElementsInfo.sort((a, b) => a.fontSize - b.fontSize).reverse();
+
+  hTagElementsInfo = hTagElementsInfo.filter((x) => x.belowMainContent === false);
+
+  hTagElementsInfo.sort((a, b) => a.score - b.score).reverse();
+
+  console.log('hTagElementsInfo', hTagElementsInfo);
 
   return hTagElementsInfo[0].elementRef.textContent;
 }

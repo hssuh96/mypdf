@@ -92,7 +92,11 @@ walk_the_DOM(wrapper.firstChild, function(element) {
     // }
 
 
-    if(element.getAttribute && element.getAttribute("role") =="toolbar"){
+    if(element.getAttribute && element.getAttribute("role") === "toolbar"){
+        element.remove();
+    }
+    if(element.tagName && element.tagName === "FOOTER"){
+      console.log('element', element);
         element.remove();
     }
 

@@ -1,4 +1,4 @@
-@import url(http://fonts.googleapis.com/earlyaccess/notosanskr.css);
+/* @import url(http://fonts.googleapis.com/earlyaccess/notosanskr.css); */
 
 .myp-remove-candidate-element {
   background-color: #badbff !important;
@@ -110,14 +110,13 @@ button:hover {
     transition: all 0.4s ease 0s;
 }
 
-/* @font-face {
+@font-face {
 font-family: 'NotoKr';
 font-style: normal;
 font-weight: 300;
 src: local('Noto Sans Regular'), local('NotoSans-Regular'), url(/fonts/NotoSans-Regular.eot);
-src: url(/fonts/NotoSans-Regular.eot?#iefix) format('embedded-opentype'),
-url(/fonts/NotoSans-Regular.woff2) format('woff2'),
-url(/fonts/NotoSans-Regular.woff) format('woff');
+src: url(/fonts/NotoSans-Light.eot?#iefix) format('embedded-opentype'),
+url(/fonts/NotoSans-Light.otf) format('otf');
 }
 
 
@@ -127,6 +126,5 @@ font-style: normal;
 font-weight: bold;
 src: local('Noto Sans Bold'), local('NotoSans-Bold'), url(/fonts/NotoSans-Bold.eot);
 src: url(/fonts/NotoSans-Bold.eot?#iefix) format('embedded-opentype'),
-url(/fonts/NotoSans-Bold.woff2) format('woff2'),
-url(/fonts/NotoSans-Bold.woff) format('woff');
-} */
+url(/fonts/NotoSans-Bold.otf) format('otf');
+}
