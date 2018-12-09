@@ -57,50 +57,7 @@ body.myp-modal-opened {
   border: 0px;
 }
 
-/* .myp-mouseover {
-  background-color: #badbff;
-} */
-
-.myp-selected-element {
-  background-color: #badbff !important;
-}
-
-/* .myp-selected-element-div, .myp-candidate-element-div {
-  background-color: #badbff;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 99999;
-  opacity: 0.4;
-} */
-
-/* .myp-selected-element::before {
-  background-color: #badbff;
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 99999;
-  opacity: 0.4;
-}
-
-.myp-candidate-element::before {
-  background-color: #badbff;
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 99999;
-  opacity: 0.4;
-} */
-
-.myp-candidate-element {
+.myp-remove-candidate-element {
   background-color: #badbff !important;
   cursor: pointer;
   /* transition: 0.2s; */
