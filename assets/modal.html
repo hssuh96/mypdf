@@ -1,9 +1,12 @@
 <div id="myp-modal" class="myp-modal">
     <div class="myp-modal-content">
-        <div>
-          <button id="erase">Erase</button>
-          <button id="print">Print</button>
-          <span class="myp-close-btn">&times;</span>
+        <div class="myp-button-container">
+          <div class="myp-button-left-container">
+            <button id="myp-erase-btn" class="myp-btn"><i class="fas fa-eraser"></i> Erase</button>
+            <button id="myp-undo-btn" class="myp-btn"><i class="fas fa-undo-alt"></i> Undo</button>
+            <button id="myp-print-btn" class="myp-btn"><i class="fas fa-print"></i> Print</button>
+          </div>
+          <div class="myp-button-right-container"><i id="myp-close-btn" class="fas fa-times"></i></div>
         </div>
         <div class="myp-page-content">
           <iframe class="myp-page-content-iframe"></iframe>

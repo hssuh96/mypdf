@@ -11,12 +11,72 @@
   padding-top: 20px;
 }
 
-/* Modal Content/Box */
 .myp-modal-content {
   background-color: #fefefe;
   margin: 0 auto; /* 15% from the top and centered */
-  border: 1px solid #888;
+  border: none;
   width: 80%; /* Could be more or less, depending on screen size */
+  box-shadow: 0px 0px 1px 1px #3a3a3a;
+}
+
+.myp-button-container {
+  height: 46px;
+  background-color: #3d3d3d;
+  display: flex;
+  box-shadow: 0px 1px 1px #7c7c7c;
+}
+
+.myp-button-left-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding-left: 30px;
+}
+
+.myp-button-right-container {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  cursor: pointer;
+  color: #c4c4c4;
+}
+
+.myp-button-right-container:hover {
+  color: #e8e8e8;
+}
+
+.myp-btn {
+  background-color: transparent;
+  font-size: 14px;
+  margin-right: 40px;
+  color: #c4c4c4;
+  cursor: pointer;
+  border: none;
+}
+
+.myp-btn i {
+  margin-right: 5px;
+}
+
+.myp-btn.active {
+  color: #c4e6ff;
+}
+
+.myp-btn.active:hover {
+  color: #c4e6ff;
+}
+
+.myp-btn.hide {
+  display: none;
+}
+
+.myp-btn:hover {
+  color: #e8e8e8;
+}
+
+.myp-btn:focus {
+  outline: none;
 }
 
 /* The Close Button */
@@ -55,10 +115,4 @@ body.myp-modal-opened {
   width: 100%;
   height: 80vh;
   border: 0px;
-}
-
-.myp-remove-candidate-element {
-  background-color: #badbff !important;
-  cursor: pointer;
-  /* transition: 0.2s; */
 }

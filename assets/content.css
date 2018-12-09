@@ -1,6 +1,14 @@
+@import url(http://fonts.googleapis.com/earlyaccess/notosanskr.css);
+
+.myp-remove-candidate-element {
+  background-color: #badbff !important;
+  cursor: pointer;
+  /* transition: 0.2s; */
+}
+
 *{
     font-size: 15px;
-    font-family: NotoSansCJKkr, Arial, Helvetica, sans-serif;
+    font-family: NotoKrR, Arial, Helvetica, sans-serif;
     line-height: 1.6;
 }
 html{
@@ -19,7 +27,7 @@ a {
 img {
     display: block;
     margin: 0 auto;
-    width: 50%;
+    max-width: 80vw;
     height: auto;
 }
 h1{
@@ -57,7 +65,7 @@ strong{
     font-weight: bold;
     line-height: 1.6;
 }
-hr { 
+hr {
     display: block;
     margin-top: 0.5em;
     margin-bottom: 0.5em;
@@ -65,7 +73,7 @@ hr {
     margin-right: auto;
     border-style: inset;
     border-width: 0.7px;
-} 
+}
 
 /* button {
     color: #fff !important;
@@ -102,15 +110,23 @@ button:hover {
     transition: all 0.4s ease 0s;
 }
 
-@font-face {
-    font-family: NotoSansCJKkr;
-    src : url(/Users/JC/whaleExtension/whale_contest/fonts/NotoSansCJKkr-Light.otf);
+/* @font-face {
+font-family: 'NotoKr';
+font-style: normal;
+font-weight: 300;
+src: local('Noto Sans Regular'), local('NotoSans-Regular'), url(/fonts/NotoSans-Regular.eot);
+src: url(/fonts/NotoSans-Regular.eot?#iefix) format('embedded-opentype'),
+url(/fonts/NotoSans-Regular.woff2) format('woff2'),
+url(/fonts/NotoSans-Regular.woff) format('woff');
 }
 
 
 @font-face {
-    font-family: NotoSansCJKkr;
-    src: url(/Users/JC/whaleExtension/whale_contest/fonts/NotoSansCJKkr-Bold.otf);
-    font-weight: bold;
-}
-  
+font-family: 'NotoKrR';
+font-style: normal;
+font-weight: bold;
+src: local('Noto Sans Bold'), local('NotoSans-Bold'), url(/fonts/NotoSans-Bold.eot);
+src: url(/fonts/NotoSans-Bold.eot?#iefix) format('embedded-opentype'),
+url(/fonts/NotoSans-Bold.woff2) format('woff2'),
+url(/fonts/NotoSans-Bold.woff) format('woff');
+} */

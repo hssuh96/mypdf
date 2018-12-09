@@ -26,13 +26,6 @@ function createElementFromHTML(htmlString) {
 }
 
 function appendModalToDocument(modalElement) {
-  const modalCloseBtn = modalElement.getElementsByClassName("myp-close-btn")[0];
-
-  modalCloseBtn.addEventListener("click", () => {
-    document.getElementById("myp-modal").remove();
-    document.body.classList.remove("myp-modal-opened");
-  });
-
   document.body.classList.add("myp-modal-opened");
   document.body.appendChild(modalElement);
 }
@@ -123,10 +116,6 @@ walk_the_DOM(wrapper.firstChild, function(element) {
 }
 
 
-
-
-
-
 var modalHTMLPath = chrome.extension.getURL('assets/modal.html');
 
 // fetch(contentCSSPath)
@@ -138,6 +127,14 @@ var modalHTMLPath = chrome.extension.getURL('assets/modal.html');
 fetch(modalHTMLPath)
 .then(response => response.text())
 .then(data => {
+  const faStyleElement = document.createElement("link");
+  faStyleElement.setAttribute("rel", "stylesheet");
+  faStyleElement.setAttribute("type", "text/css");
+  faStyleElement.setAttribute("href", "https://use.fontawesome.com/releases/v5.5.0/css/all.css");
+  faStyleElement.setAttribute("integrity", "sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU");
+  faStyleElement.setAttribute("crossorigin", "anonymous");
+  document.head.appendChild(faStyleElement);
+
   if (document.getElementById("myp-modal")) {
     document.getElementById("myp-modal").remove();
   }
@@ -165,52 +162,83 @@ fetch(modalHTMLPath)
   const modalIframeElement = modalElement.getElementsByClassName("myp-page-content-iframe")[0];
   const iframeDocument = modalIframeElement.contentWindow.document;
 
-  iframeDocument.open();
-  iframeDocument.write(documentHTML);
-  iframeDocument.close();
-
-  const modalCSSPath = chrome.extension.getURL('assets/modal.css');
-
-  const modalStyleElement = document.createElement("link")
-  modalStyleElement.setAttribute("rel", "stylesheet")
-  modalStyleElement.setAttribute("type", "text/css")
-  modalStyleElement.setAttribute("href", modalCSSPath)
-  modalStyleElement.setAttribute("id", "myp-modal-style");
-
-  iframeDocument.head.appendChild(modalStyleElement);
+  // iframeDocument.open();
+  // iframeDocument.write(documentHTML);
+  // iframeDocument.close();
 
   let isEraseActivated = false;
 
-  document.getElementById("erase").addEventListener("click", () => {
+  document.getElementById("myp-erase-btn").addEventListener("click", () => {
     isEraseActivated = !isEraseActivated;
+
+    if (isEraseActivated) {
+      document.getElementById("myp-erase-btn").classList.add("active");
+    } else {
+      document.getElementById("myp-erase-btn").classList.remove("active");
+    }
   });
 
-  document.getElementById("print").addEventListener("click", () => {
+  document.getElementById("myp-print-btn").addEventListener("click", () => {
     const printFrm = modalIframeElement.contentWindow;
     printFrm.focus();
     printFrm.print();
   });
 
-  iframeDocument.addEventListener("click", (evt) => {
-    evt.preventDefault(); // to prevent link click
+  document.getElementById("myp-close-btn").addEventListener("click", () => {
+    document.getElementById("myp-modal").remove();
+    document.body.classList.remove("myp-modal-opened");
+  });
 
-    if (isEraseActivated) {
-      if (evt.target) {
-        evt.target.remove();
+  const undoList = [];
+
+  const setUndoDisplay = function() {
+    if (undoList.length > 0) {
+      document.getElementById("myp-undo-btn").classList.remove("hide");
+    } else {
+      document.getElementById("myp-undo-btn").classList.add("hide");
+    }
+  }
+
+  const initializeIframeDocument = function(htmlString) {
+    iframeDocument.open();
+    iframeDocument.write(htmlString);
+    iframeDocument.close();
+
+    iframeDocument.addEventListener("click", (evt) => {
+      evt.preventDefault(); // to prevent link click
+
+      if (isEraseActivated) {
+        if (evt.target) {
+          undoList.push(iframeDocument.documentElement.outerHTML);
+          setUndoDisplay();
+          evt.target.remove();
+        }
       }
+    });
+
+    iframeDocument.addEventListener("mouseover", (evt) => {
+      removeAllClassesInElement(iframeDocument, "myp-remove-candidate-element");
+      if (isEraseActivated) {
+        if (evt.target) {
+          evt.target.classList.add("myp-remove-candidate-element");
+        }
+      }
+    });
+
+    iframeDocument.addEventListener("mouseout", (evt) => {
+      removeAllClassesInElement(iframeDocument, "myp-remove-candidate-element");
+    });
+  };
+
+  initializeIframeDocument(documentHTML);
+
+  document.getElementById("myp-undo-btn").addEventListener("click", () => {
+    if (undoList.length > 0) {
+      const lastHTML = undoList.pop();
+      setUndoDisplay();
+      initializeIframeDocument(lastHTML);
     }
   });
 
-  iframeDocument.addEventListener("mouseover", (evt) => {
-    removeAllClassesInElement(iframeDocument, "myp-remove-candidate-element");
-    if (isEraseActivated) {
-      if (evt.target) {
-        evt.target.classList.add("myp-remove-candidate-element");
-      }
-    }
-  });
-
-  iframeDocument.addEventListener("mouseout", (evt) => {
-    removeAllClassesInElement(iframeDocument, "myp-remove-candidate-element");
-  });
+  setUndoDisplay();
 });
