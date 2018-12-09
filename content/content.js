@@ -2,6 +2,10 @@ extractedElement = extractMainContentElement(document.body);
 
 console.log('extracted main content element!', extractedElement);
 
+titleElement = findTitle(document.body, extractedElement);
+
+console.log('extracted title', titleElement);
+
 function addModalStyleToDocument() {
   const modalCSSPath = chrome.extension.getURL('assets/modal.css');
 
@@ -74,7 +78,8 @@ fetch(modalHTMLPath)
 
   addModalStyleToDocument();
 
-  const documentHTML = document.head.outerHTML + document.body.outerHTML;
+  // const documentHTML = document.head.outerHTML + document.body.outerHTML;
+  const documentHTML = extractedElement.outerHTML;
 
   const modalElement = createElementFromHTML(data);
 
@@ -89,58 +94,21 @@ fetch(modalHTMLPath)
 
   let selectedElement = null;
 
-  var foo;
   iframeDocument.addEventListener("click", (evt) => {
-    console.log('iframe click!');
     evt.preventDefault(); // to prevent link click
 
-    console.log('target', evt.target);
     removeAllClassesInElement(iframeDocument, "myp-selected-element");
-
-    // if (foo) {
-    //   foo.remove();
-    // }
 
     selectedElement = findNearestCommonAncestorOfTwo(selectedElement, evt.target);
     selectedElement.classList.add("myp-selected-element");
-
-    // foo = document.createElement("div");
-    // foo.classList.add("myp-selected-element-div");
-    // selectedElement.appendChild(foo);
-    // console.log('added foo', selectedElement);
   });
 
-  var bar;
   // let candidateElement;
   iframeDocument.addEventListener("mouseover", (evt) => {
-    console.log('mouseover', evt.target);
-    // removeAllClassesInElement(iframeDocument, "myp-mouseover");
     removeAllClassesInElement(iframeDocument, "myp-candidate-element");
 
-    // let mouseoverElement = evt.target;
-    // if (mouseoverElement.nodeType === Node.ELEMENT_NODE
-    //   && mouseoverElement.classList.contains("myp-candidate-element-div")) {
-    //   mouseoverElement = mouseoverElement.parentNode;
-    // }
-
-    // evt.target.classList.add("myp-mouseover");
     const candidateElement = findNearestCommonAncestorOfTwo(selectedElement, evt.target);
     candidateElement.classList.add("myp-candidate-element");
-
-    // console.log('candidateElement', candidateElement);
-    // console.log('newCandidateElement', newCandidateElement);
-    // if (candidateElement !== newCandidateElement) {
-    //   console.log('different!');
-    //   if (bar) {
-    //     bar.remove();
-    //   }
-    //
-    //   candidateElement = newCandidateElement;
-    //
-    //   bar = document.createElement("div");
-    //   bar.classList.add("myp-candidate-element-div");
-    //   candidateElement.appendChild(bar);
-    // }
   });
 
   iframeDocument.addEventListener("mouseout", (evt) => {
@@ -148,8 +116,6 @@ fetch(modalHTMLPath)
   });
 
   document.getElementsByClassName("myp-trim-btn")[0].addEventListener("click", () => {
-    console.log('trim');
-
     iframeDocument.body.innerHTML = selectedElement.outerHTML;
   })
 });

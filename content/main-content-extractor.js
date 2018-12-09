@@ -70,37 +70,113 @@ var sideBarCompositeCondition = {
 
 function extractMainContentElement(bodyElement) {
   // website specific condition에 의해 얻은 것은 바로 return
-  const websiteSpecificCompositeCondition = websiteSpecificCompositeConditions[window.location.hostname];
-
-  if (websiteSpecificCompositeCondition) {
-    const elementByWebsiteSpecificConditions = findElementByCompositeCondition(bodyElement, websiteSpecificCompositeCondition);
-
-    if (elementByWebsiteSpecificConditions) {
-      return elementByWebsiteSpecificConditions;
-    }
-  }
+  // const websiteSpecificCompositeCondition = websiteSpecificCompositeConditions[window.location.hostname];
+  //
+  // if (websiteSpecificCompositeCondition) {
+  //   const elementByWebsiteSpecificConditions = findElementByCompositeCondition(bodyElement, websiteSpecificCompositeCondition);
+  //
+  //   if (elementByWebsiteSpecificConditions) {
+  //     return elementByWebsiteSpecificConditions;
+  //   }
+  // }
 
   // general condition에 의해 찾은 것은 몇 단계 필터링 단계를 더 거침.
-  const elementByGeneralConditions = findElementByCompositeCondition(bodyElement, generalCompositeCondition);
+  // const elementByGeneralConditions = findElementByCompositeCondition(bodyElement, generalCompositeCondition);
 
-  const objectiveElement = elementByGeneralConditions ? elementByGeneralConditions : bodyElement;
+  // const objectiveElement = elementByGeneralConditions ? elementByGeneralConditions : bodyElement;
+  const objectiveElement = bodyElement;
+
 
   console.log('objectiveElement', objectiveElement);
 
   // find sideBar
-  const sideBarElementByConditions = findElementByCompositeCondition(objectiveElement, sideBarCompositeCondition);
+  // const sideBarElementByConditions = findElementByCompositeCondition(objectiveElement, sideBarCompositeCondition);
+  //
+  // if (sideBarElementByConditions) {
+  //   console.log('sideBar', sideBarElementByConditions);
+  //
+  //   const estimatedMainContentElementByExcludingSidebar = findMainContentByExcludingSideBar(objectiveElement, sideBarElementByConditions);
+  //
+  //   if (estimatedMainContentElementByExcludingSidebar) {
+  //     return estimatedMainContentElementByExcludingSidebar;
+  //   }
+  // }
+  const estimatedMainContent = findEstimatedMainContent(objectiveElement);
 
-  if (sideBarElementByConditions) {
-    console.log('sideBar', sideBarElementByConditions);
+  return estimatedMainContent;
+}
 
-    const estimatedMainContentElementByExcludingSidebar = findMainContentByExcludingSideBar(objectiveElement, sideBarElementByConditions);
-
-    if (estimatedMainContentElementByExcludingSidebar) {
-      return estimatedMainContentElementByExcludingSidebar;
+function findTitle(bodyElement, mainContentElement) {
+  const hTagElements = ["h1", "h2", "h3", "h4", "h5", "h6"].reduce((acc, val) => {
+    const elements = bodyElement.getElementsByTagName(val);
+    const elList = []
+    for (let i = 0 ; i < elements.length ; i++) {
+      elList.push(elements[i]);
     }
+
+    return acc.concat(elList);
+  }, []);
+
+  const mainContentElementDOMRect = mainContentElement.getBoundingClientRect();
+
+  const hTagElementsInfo = hTagElements.map((el) => {
+    const fontSize = window.getComputedStyle(el).fontSize;
+    const isInsideMainContentElement = mainContentElement.contains(el);
+
+    const elDOMRect = el.getBoundingClientRect();
+
+    const distanceBetweenMainContent = Math.min(Math.abs(mainContentElementDOMRect.top - elDOMRect.bottom), Math.abs(mainContentElementDOMRect.top - elDOMRect.top));
+
+    return {
+      'elementRef': el,
+      'fontSize': parseInt(fontSize),
+      'isInsideMainContentElement': isInsideMainContentElement,
+      'distanceBetweenMainContent': distanceBetweenMainContent
+    };
+  });
+
+  if (hTagElementsInfo.length === 0) {
+    return null;
   }
 
-  console.log('필터링 하나도 안 먹힘')
+  hTagElementsInfo.sort((a, b) => a.fontSize - b.fontSize).reverse();
+
+  return hTagElementsInfo[0];
+}
+
+function findEstimatedMainContent(objectiveElement) {
+  let loopCount = 0;
+  while (objectiveElement && loopCount < 1000) {
+    loopCount += 1;
+
+    if (objectiveElement.nodeType === Node.ELEMENT_NODE) {
+      const childNodes = objectiveElement.childNodes;
+      // console.log('childNodes', childNodes);
+
+      const elList = [];
+      for (let i = 0 ; i < childNodes.length ; i++) {
+        if (childNodes[i].nodeType === Node.ELEMENT_NODE) {
+          elList.push(childNodes[i]);
+        }
+      }
+
+      const scoreSortedElList = sortElementByScore(elList);
+
+      console.log('scoreSortedElList', scoreSortedElList);
+
+      if (scoreSortedElList.length > 0) {
+        if (scoreSortedElList[0].score < 0.5) {
+          return objectiveElement;
+        }
+
+        objectiveElement = scoreSortedElList[0].elementRef;
+      } else {
+        return objectiveElement;
+      }
+
+      console.log('======================')
+    }
+  }
 
   return objectiveElement;
 }
@@ -176,6 +252,56 @@ function getHighestScoreElement(elList) {
   return highestScoreElement;
 }
 
+function sortElementByScore(elList) {
+  const elListWithScore = [];
+  for (let i = 0 ; i < elList.length ; i++) {
+    if (elList[i].nodeType === Node.ELEMENT_NODE) {
+      elListWithScore.push({
+        'elementRef': elList[i],
+        // 'score': getTotalScore(elList[i]),
+        'score': getElementWordCountScoreV2(elList[i]),
+        // 'areaScore': getElementAreaScore(elList[i]),
+        // 'wordList': getWordList(elList[i]),
+        // 'wordListFiltered': getWordList(elList[i]).filter((str) => countWords(str) > 3),
+        // 'wordCountListFiltered': getWordList(elList[i]).filter((str) => countWords(str) > 3).map((str) => countWords(str)),
+        // 'wordScoreV1': getWordList(elList[i]).map((str) => countWords(str)).filter((count) => count > 3).reduce((acc, val) => acc + val, 0),
+        // 'wordScoreV2': getElementWordCountScoreV2(elList[i])
+      })
+    }
+  }
+
+  elListWithScore.sort((a, b) => (a.score - b.score)).reverse();
+
+  return elListWithScore;
+}
+
+function getElementWordCountScoreV2(element) {
+  const parentNode = element.parentNode;
+
+  if (document.body.contains(parentNode)) {
+    const childNodes = parentNode.childNodes;
+    const childNodesScoreList = [];
+    for (let i = 0 ; i < childNodes.length ; i++) {
+      const score = getWordList(childNodes[i]).map((str) => countWords(str)).filter((count) => count > 3).reduce((acc, val) => acc + val * Math.min(val, 40), 0);
+      childNodesScoreList.push(score)
+    }
+
+    const totalScoreOfSiblingsIncludeMe = childNodesScoreList.reduce((acc, val) => acc + val, 0);
+
+    const myScore = getWordList(element).map((str) => countWords(str)).filter((count) => count > 3).reduce((acc, val) => acc + val * Math.min(val, 40), 0);
+
+    if (totalScoreOfSiblingsIncludeMe === 0) {
+      return 1;
+    }
+
+    return myScore / totalScoreOfSiblingsIncludeMe;
+  } else {
+    return 1;
+  }
+
+  // return getWordList(element).map((str) => countWords(str)).filter((count) => count > 3).reduce((acc, val) => acc + val * val, 0)
+}
+
 function getTotalScore(element) {
   return (getElementAreaScore(element) + 2 * getElementWordCountScore(element)) / 3;
 }
@@ -184,15 +310,13 @@ function getElementAreaScore(element) { // 0 ~ 1
   const elDOMRect = element.getBoundingClientRect();
   const bodyDOMRect = document.body.getBoundingClientRect();
 
-  if (elDOMRect.width > bodyDOMRect.width || elDOMRect.height > bodyDOMRect.height) {
-    return 1;
-  }
-
   if (bodyDOMRect.width === 0 || bodyDOMRect.height === 0) {
     return 1;
   }
 
-  return (elDOMRect.width * elDOMRect.height) / (bodyDOMRect.width * bodyDOMRect.height);
+  const areaRatio = (elDOMRect.width * elDOMRect.height) / (bodyDOMRect.width * bodyDOMRect.height);
+
+  return Math.min(areaRatio, 1);
 }
 
 function getElementWordCountScore(element) { // 0 ~ 1
@@ -223,6 +347,90 @@ function getWordCountList(node) {
   }
 
   return wordCountList;
+}
+
+function getWordList(node) {
+  let wordList = []; // word count가 0인 것은 넣지 않음
+
+  if (node.nodeType === Node.ELEMENT_NODE) {
+    if (node.tagName === 'SCRIPT' || node.tagName === 'NOSCRIPT') {
+      return wordList;
+    }
+
+    node = node.firstChild;
+    while (node) {
+      if (isTextNodeOrPhraseTagsOrSpan(node) && node.previousSibling &&
+      isTextNodeOrPhraseTagsOrSpan(node.previousSibling)) {
+        const wordListOfTextNode = getWordList(node);
+        if (wordList.length > 0 && wordListOfTextNode.length === 1) {
+          wordList[wordList.length - 1] += wordListOfTextNode[0];
+          node = node.nextSibling;
+          continue;
+        }
+      }
+
+      wordList = wordList.concat(getWordList(node))
+
+      node = node.nextSibling;
+    }
+  } else if (node.nodeType === Node.TEXT_NODE) {
+    if (document.body.contains(node.parentNode) && node.parentNode.nodeType === Node.ELEMENT_NODE) {
+      const nodeBoundingRect = node.parentNode.getBoundingClientRect();
+      if (nodeBoundingRect.width * nodeBoundingRect.height === 0) {
+        return wordList;
+      }
+    }
+
+    const text = node.wholeText;
+    if (text.length > 0) {
+      if (countWords(text) > 0) {
+        wordList.push(text);
+      }
+    }
+  }
+
+  return wordList;
+}
+
+function isTextNodeOrPhraseTagsOrSpan(node) {
+  const styleTagsList = [
+    "SPAN",
+    "EM",
+    "STRONG",
+    "MARK",
+    "ABBR",
+    "ACRONYM",
+    "CODE",
+    "B",
+    "I",
+    "U",
+    "STRIKE",
+    "TT",
+    "SUP",
+    "SUB",
+    "INS",
+    "DEL",
+    "BIG",
+    "SMALL",
+    "FONT",
+    "A"
+  ]
+
+  if (node) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      return true;
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
+      if (styleTagsList.includes(node.tagName)) {
+        const childNodes = node.childNodes;
+
+        if (childNodes.length === 1) {
+          return isTextNodeOrPhraseTagsOrSpan(childNodes[0]);
+        }
+      }
+    }
+  }
+
+  return false;
 }
 
 function countWords(s){
