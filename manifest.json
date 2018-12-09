@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
 
-  "name": "My PDF",
+  "name": "Print Cleaner",
   "version": "1",
 
   "background": {
