@@ -233,6 +233,20 @@ fetch(modalHTMLPath)
     document.body.classList.remove("myp-modal-opened");
   });
 
+  document.getElementById("myp-image-size-select").addEventListener("change", (evt) => {
+    console.log('change!', evt.target.value);
+
+    if (document.getElementById("myp-style-for-image-size")) {
+      document.getElementById("myp-style-for-image-size").remove();
+    }
+
+    const imageSizeStyleElement = document.createElement("style");
+    imageSizeStyleElement.setAttribute("id", "myp-style-for-image-size");
+    imageSizeStyleElement.innerHTML = `img{max-width:${evt.target.value};}`
+
+    iframeDocument.head.appendChild(imageSizeStyleElement);
+  })
+
   const undoList = [];
 
   const setUndoDisplay = function() {
