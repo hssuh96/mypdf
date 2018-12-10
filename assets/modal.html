@@ -2,9 +2,9 @@
     <div class="myp-modal-content">
         <div class="myp-button-container">
           <div class="myp-button-left-container">
-            <button id="myp-erase-btn" class="myp-btn"><i class="fas fa-eraser"></i> Erase</button>
-            <button id="myp-undo-btn" class="myp-btn"><i class="fas fa-undo-alt"></i> Undo</button>
-            <button id="myp-print-btn" class="myp-btn"><i class="fas fa-print"></i> Print</button>
+            <button id="myp-erase-btn" class="myp-btn"><i class="fas fa-eraser"></i> 지우기</button>
+            <button id="myp-undo-btn" class="myp-btn"><i class="fas fa-undo-alt"></i> 되돌리기</button>
+            <button id="myp-print-btn" class="myp-btn"><i class="fas fa-print"></i> 프린트하기</button>
             <div class="myp-dropdown">
               <i class="fas fa-image"></i>
               <select id="myp-image-size-select">
@@ -14,8 +14,11 @@
                 <option value="25%">25%</option>
               </select>
             </div>
+            <button id="myp-fullscreen-btn" class="myp-btn"><i class="fas fa-expand-arrows-alt"></i> 크게보기</button>
           </div>
-          <div class="myp-button-right-container"><i id="myp-close-btn" class="fas fa-times"></i></div>
+          <div class="myp-button-right-container">
+            <button id="myp-close-btn" class="myp-btn"><i class="fas fa-times"></i></button>
+          </div>
         </div>
         <div class="myp-page-content">
           <iframe class="myp-page-content-iframe"></iframe>

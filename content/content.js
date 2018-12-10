@@ -234,8 +234,6 @@ fetch(modalHTMLPath)
   });
 
   document.getElementById("myp-image-size-select").addEventListener("change", (evt) => {
-    console.log('change!', evt.target.value);
-
     if (document.getElementById("myp-style-for-image-size")) {
       document.getElementById("myp-style-for-image-size").remove();
     }
@@ -245,7 +243,34 @@ fetch(modalHTMLPath)
     imageSizeStyleElement.innerHTML = `img{max-width:${evt.target.value};}`
 
     iframeDocument.head.appendChild(imageSizeStyleElement);
-  })
+  });
+
+  document.getElementById("myp-fullscreen-btn").addEventListener("click", (evt) => {
+    if (document.getElementById("myp-style-for-fullscreen")) {
+      document.getElementById("myp-style-for-fullscreen").remove();
+      const i = evt.target.childNodes[0];
+      const textNode = evt.target.childNodes[1];
+
+      if (i && textNode) {
+        i.setAttribute("class", "fas fa-expand-arrows-alt")
+        textNode.data = ' 크게보기';
+      }
+    } else {
+      const imageSizeStyleElement = document.createElement("style");
+      imageSizeStyleElement.setAttribute("id", "myp-style-for-fullscreen");
+      imageSizeStyleElement.innerHTML = '.myp-modal {height:100vh !important; padding:0 !important;} .myp-grey-background {background-color: grey !important; opacity: 1 !important;}';
+
+      document.head.appendChild(imageSizeStyleElement);
+
+      const i = evt.target.childNodes[0];
+      const textNode = evt.target.childNodes[1];
+
+      if (i && textNode) {
+        i.setAttribute("class", "fas fa-compress")
+        textNode.data = ' 작게보기';
+      }
+    }
+  });
 
   const undoList = [];
 
