@@ -1,8 +1,9 @@
 {
   "manifest_version": 2,
 
-  "name": "Print Cleaner",
-  "version": "1",
+  "name": "클린 모드",
+  "version": "1.0.1",
+  "description": "내가 원하는대로 웹페이지 저장하기! 개인화된 웹페이지 읽기모드 & 프린트 서비스",
 
   "background": {
     "scripts": ["background/background.js"],
@@ -10,10 +11,10 @@
   },
 
   "browser_action": {
-    "default_icon": "assets/icon/printer_16.png",
-    "icons": { "16": "assets/icon/printer_16.png",
-                "32": "assets/icon/printer_32.png",
-              "128": "assets/icon/printer_128.png" }
+    "default_icon": "assets/icon/eraser_128.png",
+    "icons": { "16": "assets/icon/eraser_16.png",
+                "32": "assets/icon/eraser_32.png",
+              "128": "assets/icon/eraser_128.png" }
   },
 
   "content_scripts": [
