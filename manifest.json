@@ -3,7 +3,7 @@
 
   "name": "클린 모드",
   "version": "1.0.1",
-  "description": "내가 원하는대로 웹페이지 저장하기! 개인화된 웹페이지 읽기모드 & 프린트 서비스",
+  "description": "내가 원하는대로 웹페이지 저장하기! 개인화된 웹페이지 읽기모드 및 프린트 서비스",
 
   "background": {
     "scripts": ["background/background.js"],
