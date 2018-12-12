@@ -112,6 +112,16 @@ walk_the_DOM(wrapper, function(element) {
       return;
     }
 
+    if (element.tagName === 'IFRAME') {
+      element.remove();
+      return;
+    }
+
+    if (element.tagName === 'SCRIPT') {
+      element.remove();
+      return;
+    }
+
     // element.classList.forEach((className) => {
     //   if (className.toLowerCase().includes("comment")) {
     //     element.remove();
