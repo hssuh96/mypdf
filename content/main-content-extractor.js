@@ -71,6 +71,27 @@ var sideBarCompositeCondition = {
 var websiteSpecificMainContentFinderMap = {
   "techcrunch.com": (bodyElement) => {
     return bodyElement.querySelector("div.article__content-wrap .article-content");
+  },
+  "www.jiji.com": (bodyElement) => {
+    return bodyElement.querySelector("div.ArticleText");
+  },
+  "www.ytn.co.kr": (bodyElement) => {
+    return bodyElement.querySelector("div.article_paragraph");
+  },
+  "www.veritas-a.com": (bodyElement) => {
+    return bodyElement.querySelector("div.cont-body");
+  },
+  "www.viva100.com": (bodyElement) => {
+    return bodyElement.querySelector("div.left_text_box");
+  },
+  "www.osen.co.kr": (bodyElement) => {
+    return bodyElement.querySelector("div.detailView");
+  },
+  "www.dailian.co.kr": (bodyElement) => {
+    return bodyElement.querySelector("div#view_con");
+  },
+  "blog.naver.com": (bodyElement) => {
+    return bodyElement.querySelector("div.se_component_wrap");
   }
 }
 
@@ -144,6 +165,33 @@ var websiteSpecificTitleFinderMap = {
   },
   "techcrunch.com": (bodyElement) => {
     return bodyElement.querySelector("div.article__content-wrap .article__header h1.article__title").textContent;
+  },
+  "www.oss.kr": (bodyElement) => {
+    return bodyElement.querySelector("div.read_header h1 a").text;
+  },
+  "www.jiji.com": (bodyElement) => {
+    return bodyElement.querySelector("div.ArticleTitle h1").textContent;
+  },
+  "www.ytn.co.kr": (bodyElement) => {
+    return bodyElement.querySelector("div.article_tit").textContent;
+  },
+  "jmagazine.joins.com": (bodyElement) => {
+    return bodyElement.querySelector("div.tit_area h3").textContent;
+  },
+  "www.sportsseoul.com": (bodyElement) => {
+    return bodyElement.querySelector("div.viewtitle").textContent;
+  },
+  "www.veritas-a.com": (bodyElement) => {
+    return bodyElement.querySelector("div.headline .headline-title").textContent;
+  },
+  "www.viva100.com": (bodyElement) => {
+    return bodyElement.querySelector("div.top_title .view_top_title").textContent;
+  },
+  "www.osen.co.kr": (bodyElement) => {
+    return bodyElement.querySelector("div.detailTitle h1").textContent;
+  },
+  "www.dailian.co.kr": (bodyElement) => {
+    return bodyElement.querySelector("div.view_titlebox_r1").textContent;
   }
 }
 
