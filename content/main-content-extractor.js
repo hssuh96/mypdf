@@ -68,6 +68,12 @@ var sideBarCompositeCondition = {
   ]
 }
 
+var websiteSpecificMainContentFinderMap = {
+  "techcrunch.com": (bodyElement) => {
+    return bodyElement.querySelector("div.article__content-wrap .article-content");
+  }
+}
+
 function extractMainContentElement(bodyElement) {
   // website specific condition에 의해 얻은 것은 바로 return
   const websiteSpecificCompositeCondition = websiteSpecificCompositeConditions[window.location.hostname];
@@ -77,6 +83,16 @@ function extractMainContentElement(bodyElement) {
 
     if (elementByWebsiteSpecificConditions) {
       return elementByWebsiteSpecificConditions;
+    }
+  }
+
+  const websiteSpecificMainContentFinder = websiteSpecificMainContentFinderMap[window.location.hostname];
+
+  if (websiteSpecificMainContentFinder) {
+    const mainContentByFinder = websiteSpecificMainContentFinder(bodyElement);
+
+    if (mainContentByFinder) {
+      return mainContentByFinder;
     }
   }
 
@@ -122,7 +138,26 @@ function extractMainContentElement(bodyElement) {
   return estimatedMainContent;
 }
 
+var websiteSpecificTitleFinderMap = {
+  "www.pressian.com": (bodyElement) => {
+    return bodyElement.querySelector(".text-info .title").textContent;
+  },
+  "techcrunch.com": (bodyElement) => {
+    return bodyElement.querySelector("div.article__content-wrap .article__header h1.article__title").textContent;
+  }
+}
+
 function findTitle(bodyElement, mainContentElement) {
+  const websiteSpecificTitleFinder = websiteSpecificTitleFinderMap[window.location.hostname];
+
+  if (websiteSpecificTitleFinder) {
+    const titleByWebsiteSpecificTitleFinder = websiteSpecificTitleFinder(bodyElement);
+
+    if (titleByWebsiteSpecificTitleFinder) {
+      return titleByWebsiteSpecificTitleFinder;
+    }
+  }
+
   const hTagElements = ["h1", "h2", "h3", "h4", "h5", "h6"].reduce((acc, val) => {
     const elements = bodyElement.getElementsByTagName(val);
     const elList = []
