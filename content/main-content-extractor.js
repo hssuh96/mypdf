@@ -92,6 +92,9 @@ var websiteSpecificMainContentFinderMap = {
   },
   "blog.naver.com": (bodyElement) => {
     return bodyElement.querySelector("div.se_component_wrap");
+  },
+  "www.techtimes.com": (bodyElement) => {
+    return bodyElement.querySelector("div.at-body m-media");
   }
 }
 
@@ -192,6 +195,9 @@ var websiteSpecificTitleFinderMap = {
   },
   "www.dailian.co.kr": (bodyElement) => {
     return bodyElement.querySelector("div.view_titlebox_r1").textContent;
+  },
+  "www.laborplus.co.kr": (bodyElement) => {
+    return bodyElement.querySelector("div.article-head-title").textContent;
   }
 }
 
