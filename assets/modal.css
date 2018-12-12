@@ -1,6 +1,6 @@
 /* The Modal (background) */
 .myp-modal {
-  z-index: 99999 !important; /* Sit on top */
+  z-index: 2147483647 !important; /* Sit on top */
   position: fixed !important; /* Stay in place */
   left: 0 !important;
   top: 0 !important;

@@ -102,7 +102,7 @@ walk_the_DOM(wrapper, function(element) {
         element.remove();
         return;
     }
-
+    
     if (element.tagName === 'IMG' && !element.getAttribute("src") && element.getAttribute("data-src")) {
       element.setAttribute("src", element.getAttribute("data-src"));
     }
